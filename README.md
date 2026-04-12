@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0E0E0E,50:1a1408,100:2d1f00&height=220&section=header&text=PARFUM%20SHOP&fontSize=72&fontColor=C9A96E&fontAlignY=38&desc=✦%20Website%20Bán%20Hàng%20%26%20Quản%20Lý%20Cửa%20Hàng%20Nước%20Hoa%20✦&descAlignY=60&descSize=16&animation=fadeIn" />
+<img width="100%" src="[https://capsule-render.vercel.app/api](https://laluz.vn/wp-content/uploads/2024/12/Frame-550.jpg)?type=waving&color=0:0E0E0E,50:1a1408,100:2d1f00&height=220&section=header&text=PARFUM%20SHOP&fontSize=72&fontColor=C9A96E&fontAlignY=38&desc=✦%20Website%20Bán%20Hàng%20%26%20Quản%20Lý%20Cửa%20Hàng%20Nước%20Hoa%20✦&descAlignY=60&descSize=16&animation=fadeIn" />
 
 <br/>
 
