@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { PenTool, FlaskConical, Compass, Leaf } from 'lucide-react';
 
 /** Long lists for seamless marquee — duplicated in JSX ×2 for loop */
@@ -101,11 +102,44 @@ const FEATURED_ROW2 = [
   { name: 'Bleu Noir', brand: 'NARCISO RODRIGUEZ', price: '$225.00', image: '/images/products/narciso-bleu-noir.png', slug: 'bleu-noir' },
 ];
 
-const SEASONAL_SCENTS = [
-  { name: 'Winter Solstice', notes: 'INCENSE, PINE, LEATHER', image: '/images/products/valaya-vanilla.png' },
-  { name: 'Midnight Opera', notes: 'TUBEROSE, OUD, SAFFRON', image: '/images/products/layton-blue.png' },
-  { name: 'Linen Sky', notes: 'WHITE MUSK, ALDEHYDES, IRIS', image: '/images/products/delina-pink.png' },
-];
+type SeasonCard = { name: string; notes: string; image: string; slug: string };
+
+type SeasonThemeGroup = {
+  id: string;
+  label: string;
+  scents: readonly [SeasonCard, SeasonCard, SeasonCard];
+};
+
+/** Three cards per theme — switch via tabs (seasonal / gendered edits) */
+const SEASON_THEME_GROUPS: readonly SeasonThemeGroup[] = [
+  {
+    id: 'seasonal',
+    label: 'SEASONAL EDIT',
+    scents: [
+      { name: 'Winter Solstice', notes: 'INCENSE, PINE, LEATHER', image: '/images/products/valaya-vanilla.png', slug: 'valaya-vanilla' },
+      { name: 'Midnight Opera', notes: 'TUBEROSE, OUD, SAFFRON', image: '/images/products/layton-blue.png', slug: 'layton' },
+      { name: 'Linen Sky', notes: 'WHITE MUSK, ALDEHYDES, IRIS', image: '/images/products/delina-pink.png', slug: 'delina' },
+    ],
+  },
+  {
+    id: 'for-her',
+    label: 'FOR HER',
+    scents: [
+      { name: 'Royal Essence', notes: 'APPLE, JASMINE, VANILLA', image: '/images/products/valaya-white.png', slug: 'valaya' },
+      { name: 'Velvet Bloom', notes: 'ROSE, VANILLA, MUSK', image: '/images/products/valaya-vanilla.png', slug: 'valaya-vanilla' },
+      { name: 'Rose Nocturne', notes: 'TURKISH ROSE, LYCHEE, PEONY', image: '/images/products/delina-pink.png', slug: 'delina' },
+    ],
+  },
+  {
+    id: 'for-him',
+    label: 'FOR HIM',
+    scents: [
+      { name: 'Magnetic Musk', notes: 'MUSK, BLUE CEDAR, EBONY', image: '/images/products/narciso-bleu-noir.png', slug: 'bleu-noir' },
+      { name: 'Desert Leather', notes: 'JASMINE, PATCHOULI, LEATHER', image: '/images/products/tf-ombre-leather-dark.png', slug: 'ombre-leather' },
+      { name: 'Iris Intensity', notes: 'IRIS, LAVENDER, CEDAR', image: '/images/products/dior-homme-intense.png', slug: 'dior-homme-intense' },
+    ],
+  },
+] as const;
 
 type EssenceLuxuryTab = {
   id: string;
@@ -220,6 +254,8 @@ function ProductCard({ product }: { product: typeof FEATURED_ROW1[0] }) {
 export default function Home() {
   const [essenceTab, setEssenceTab] = useState(0);
   const essence = ESSENCE_LUXURY_TABS[essenceTab];
+  const [seasonTheme, setSeasonTheme] = useState(0);
+  const seasonGroup = SEASON_THEME_GROUPS[seasonTheme];
 
   return (
     <>
@@ -329,126 +365,282 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Scents of the Season ── */}
-      <section className="border-y border-[var(--color-border)] bg-[var(--color-bg-surface)] py-16">
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+      {/* ── Scents of the Season — equal-height cards + theme tabs ── */}
+      <section
+        className="border-y border-[var(--color-border)] bg-[var(--color-bg-surface)] py-16"
+        style={{ fontFamily: 'var(--font-body)' }}
+      >
+        <div className="box-border w-full px-6 lg:px-12" style={{ maxWidth: 1400, margin: '0 auto' }}>
           <h2
-            className="mb-10 text-center text-3xl italic text-[var(--color-text-primary)] md:text-4xl"
+            className="mb-8 text-center text-3xl italic text-[var(--color-text-primary)] md:mb-10 md:text-4xl"
             style={{ fontFamily: 'var(--font-heading)' }}
           >
             Scents of the Season
           </h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {SEASONAL_SCENTS.map((scent) => (
-              <div key={scent.name} className="group relative overflow-hidden bg-[var(--color-bg-dark)]">
-                <div className="aspect-[3/4] overflow-hidden">
-                  <img
-                    src={scent.image}
-                    alt={scent.name}
-                    className="h-full w-full object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 pt-16">
-                  <h3
-                    className="mb-1 text-xl text-white"
+
+          <div
+              className="mb-10 flex flex-wrap items-center justify-center gap-3"
+              role="tablist"
+              aria-label="Scent themes"
+            >
+              {SEASON_THEME_GROUPS.map((g, index) => {
+                const selected = index === seasonTheme;
+
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={selected}
+                    id={`season-tab-${g.id}`}
+                    aria-controls="season-cards-panel"
+                    onClick={() => setSeasonTheme(index)}
+                    className={`group relative px-6 py-2 text-[10px] tracking-[0.25em] transition-all duration-300 ${
+                      selected
+                        ? 'text-[var(--color-accent-gold)]'
+                        : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+                    }`}
                     style={{ fontFamily: 'var(--font-heading)' }}
                   >
-                    {scent.name}
-                  </h3>
-                  <p className="mb-3 text-[10px] tracking-[0.15em] text-white/60">
-                    {scent.notes}
-                  </p>
-                  <Link
-                    to="/shop"
-                    className="text-[10px] tracking-[0.15em] text-[var(--color-accent-gold)] hover:underline"
+                    <span className="relative inline-block">
+                      {g.label}
+
+                      {/* underline */}
+                      <span
+                        className={`absolute left-0 -bottom-1 h-[1px] w-full bg-[var(--color-accent-gold)] origin-left transition-transform duration-300 ${
+                          selected
+                            ? 'scale-x-100'
+                            : 'scale-x-0 group-hover:scale-x-100'
+                        }`}
+                      />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+          <div
+            id="season-cards-panel"
+            role="tabpanel"
+            aria-labelledby={`season-tab-${seasonGroup.id}`}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={seasonGroup.id}
+                className="grid w-full grid-cols-1 gap-6 md:grid-cols-3 md:gap-6"
+                style={{ alignItems: 'start' }}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -14 }}
+                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              >
+              {seasonGroup.scents.map((scent, idx) => (
+                <Link
+                  key={`${seasonGroup.id}-${scent.slug}`}
+                  to={`/product/${scent.slug}`}
+                  className={`group flex max-w-full flex-col overflow-hidden border border-[var(--color-border)] bg-transparent] no-underline shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-elevated)] ${idx === 1 ? 'md:mt-[clamp(2rem,8vw,5.5rem)]' : ''}`}
+                >
+                  <div
+                    className="relative aspect-square w-full shrink-0 overflow-hidden"
+                    style={{
+                      background: 'radial-gradient(ellipse at center, #1a2744 0%, #0a0f18 70%, #06090e 100%)',
+                    }}
                   >
-                    DISCOVER NOW
-                  </Link>
-                </div>
-              </div>
-            ))}
+                    <img
+                      src={scent.image}
+                      alt={scent.name}
+                      className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                      style={{ objectPosition: 'center center' }}
+                    />
+                  </div>
+                  <div className="flex flex-col items-center px-6 py-8 text-center md:px-8 md:py-10">
+                  <div
+                      className="mb-5 h-px w-32 md:w-48 lg:w-64 mx-auto shrink-0 bg-[#735C00]"
+                      aria-hidden
+                    />                    <h3
+                      className="mb-2 text-xl font-semibold text-[var(--color-text-primary)] md:text-2xl"
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                    >
+                      {scent.name}
+                    </h3>
+                    <p className="mb-5 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--color-text-secondary)] space-y-1.5"></p>
+                      {scent.notes.split(',').map((item, i) => (
+                        <span key={i} className="block">
+                          {item.trim()}
+                        </span>
+                      ))}
+                    
+                    <span
+                      className="group/cta inline-block text-[10px] tracking-[0.22em] text-[var(--color-accent-gold)]"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      <span className="relative inline-block pb-1 transition-transform duration-300 group-hover/cta:scale-105">
+                        DISCOVER NOW
+                        <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 transform bg-[var(--color-accent-gold)] transition-transform duration-300 group-hover/cta:scale-x-100" />
+                      </span>
+                    </span>
+                  </div>
+                </Link>
+              ))}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
-      </section>
+      </section>  
 
-      {/* ── The Essence of Luxury — full-bleed editorial tabs ── */}
-      <section className="relative min-h-[min(100vh,920px)] overflow-hidden bg-[#0d0d0d]">
-        <img
-          key={essence.id}
-          src={essence.image}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: essence.imagePosition ?? 'center center' }}
-        />
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/80"
-          aria-hidden
-        />
-        {essence.watermark ? (
-          <div
-            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
-            aria-hidden
+      {/* ── The Essence of Luxury — full-bleed editorial tabs (inline layout avoids Tailwind width bugs) ── */}
+      <section
+        style={{
+          position: 'relative',
+          minHeight: 'min(100vh, 920px)',
+          overflowX: 'hidden',
+          overflowY: 'visible',
+          backgroundColor: '#0d0d0d',
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={essence.id}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span
-              className="select-none text-white/[0.14]"
+            <img
+              src={essence.image}
+              alt=""
+              aria-hidden
               style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 'clamp(3.5rem, 16vw, 11rem)',
-                fontWeight: 700,
-                letterSpacing: '-0.02em',
-                lineHeight: 0.9,
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: essence.imagePosition ?? 'center center',
               }}
-            >
-              {essence.watermark}
-            </span>
-          </div>
-        ) : null}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0.6), rgba(0,0,0,0.82))',
+              }}
+              aria-hidden
+            />
+            {essence.watermark ? (
+              <div
+                style={{
+                  pointerEvents: 'none',
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden',
+                }}
+                aria-hidden
+              >
+                <span
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 'clamp(3.5rem, 16vw, 11rem)',
+                    fontWeight: 700,
+                    letterSpacing: '-0.02em',
+                    lineHeight: 0.9,
+                    color: 'rgba(255,255,255,0.14)',
+                    userSelect: 'none',
+                  }}
+                >
+                  {essence.watermark}
+                </span>
+              </div>
+            ) : null}
+          </motion.div>
+        </AnimatePresence>
 
-        <div className="relative z-10 mx-auto flex min-h-[min(100vh,920px)] max-w-[1400px] flex-col px-6 py-16 lg:px-12 lg:py-24">
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 10,
+            boxSizing: 'border-box',
+            width: '100%',
+            maxWidth: 1400,
+            margin: '0 auto',
+            minHeight: 'min(100vh, 920px)',
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '64px 24px 80px',
+          }}
+        >
           <div
             id="essence-luxury-panel"
             role="tabpanel"
             aria-labelledby={`essence-tab-${essence.id}`}
-            className="flex flex-1 flex-col"
+            style={{
+              width: '100%',
+              minWidth: 0,
+              flex: '1 1 auto',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
           >
-            <header className="max-w-3xl">
-              <h2
-                className="mb-6 text-4xl leading-tight text-white md:text-5xl lg:text-[3.25rem]"
-                style={{ fontFamily: 'var(--font-heading)' }}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={essence.id}
+                className="flex w-full min-w-0 flex-1 flex-col"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               >
-                The Essence of Luxury
-              </h2>
-              <p
-                className="text-sm leading-relaxed text-white/85 md:text-[15px] md:leading-[1.75]"
+              <header style={{ width: '100%', maxWidth: 640 }}>
+                <h2
+                  className="mb-6 text-4xl leading-tight text-white md:text-5xl lg:text-[3.25rem]"
+                  style={{ fontFamily: 'var(--font-heading)' }}
+                >
+                  The Essence of Luxury
+                </h2>
+                <p
+                  className="text-sm leading-relaxed text-white/85 md:text-[15px] md:leading-[1.75]"
+                  style={{ fontFamily: 'var(--font-body)', width: '100%', maxWidth: 640 }}
+                >
+                  {essence.intro}
+                </p>
+              </header>
+
+              <hr
+                style={{
+                  width: '100%',
+                  maxWidth: 960,
+                  marginTop: 40,
+                  marginBottom: 40,
+                  border: 0,
+                  borderTop: '1px solid rgba(255,255,255,0.2)',
+                }}
+              />
+
+              <div
+                className="grid w-full min-w-0 grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-10"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
-                {essence.intro}
-              </p>
-            </header>
-
-            <hr className="my-10 max-w-5xl border-0 border-t border-white/20 lg:my-12" />
-
-            <div
-              className="grid flex-1 grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-10"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
-              {essence.columns.map((text, colIdx) => (
-                <p
-                  key={`${essence.id}-col-${colIdx}`}
-                  className="text-[13px] leading-[1.7] text-white/80 lg:text-[12px] lg:leading-[1.75]"
-                >
-                  {text}
-                </p>
-              ))}
-            </div>
+                {essence.columns.map((text, colIdx) => (
+                  <p
+                    key={`${essence.id}-col-${colIdx}`}
+                    className="text-[12px] leading-[1.7] text-white/80 md:text-[13px] lg:text-[14px] lg:leading-[1.75]"                    style={{ width: '100%', minWidth: 0 }}
+                  >
+                    {text}
+                  </p>
+                ))}
+              </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          <div className="mt-auto flex flex-col gap-8 pt-14 lg:flex-row lg:items-end lg:justify-between lg:pt-20">
-            <div
-              className="flex flex-wrap gap-2 sm:gap-3"
-              role="tablist"
-              aria-label="Essence of luxury stories"
-            >
+          <div
+            className="mt-auto flex w-full min-w-0 shrink-0 flex-col gap-8 pt-12 lg:flex-row lg:items-end lg:justify-between lg:pt-20"
+          >
+            <div className="flex flex-wrap gap-2 sm:gap-3" role="tablist" aria-label="Essence of luxury stories">
               {ESSENCE_LUXURY_TABS.map((tab, index) => {
                 const selected = index === essenceTab;
                 return (
@@ -460,7 +652,7 @@ export default function Home() {
                     id={`essence-tab-${tab.id}`}
                     aria-controls="essence-luxury-panel"
                     onClick={() => setEssenceTab(index)}
-                    className={`border px-4 py-2.5 text-left text-[10px] tracking-[0.12em] transition-colors sm:px-5 ${
+                    className={`border px-4 py-2.5 text-left text-[14px] tracking-[0.12em] transition-colors sm:px-5 ${
                       selected
                         ? 'border-white/50 bg-white/20 text-white'
                         : 'border-white/35 bg-transparent text-white/75 hover:border-white/55 hover:bg-white/5 hover:text-white'
