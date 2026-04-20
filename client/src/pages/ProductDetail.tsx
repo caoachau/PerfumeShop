@@ -2,11 +2,12 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Star, Shield, Truck, Heart } from 'lucide-react';
+import { ingredientImage, productImage } from '../lib/cloudinaryAssets';
 
 const THUMB_IMAGES = [
-  '/images/products/valaya-centered.png',
-  '/images/products/valaya-flowers.png',
-  '/images/products/valaya-white.png',
+  productImage('valaya-centered.png'),
+  productImage('valaya-flowers.png'),
+  productImage('valaya-white.png'),
 ];
 
 const NOTES = {
@@ -16,10 +17,10 @@ const NOTES = {
 };
 
 const RELATED = [
-  { name: 'Ombré Leather', price: '€240.00', slug: 'ombre-leather', image: '/images/products/tf-ombre-leather-dark.png' },
-  { name: 'Amber Intrigue', price: '€280.00', slug: 'amber-intrigue', image: '/images/products/tf-amber-intrigue.png' },
-  { name: 'Oud Wood', price: '€340.00', slug: 'oud-wood', image: '/images/products/tf-oud-wood.png' },
-  { name: 'Delina', price: '€310.00', slug: 'delina', image: '/images/products/delina-pink.png' },
+  { name: 'Ombré Leather', price: '€240.00', slug: 'ombre-leather', image: productImage('tf-ombre-leather-dark.png') },
+  { name: 'Amber Intrigue', price: '€280.00', slug: 'amber-intrigue', image: productImage('tf-amber-intrigue.png') },
+  { name: 'Oud Wood', price: '€340.00', slug: 'oud-wood', image: productImage('tf-oud-wood.png') },
+  { name: 'Delina', price: '€310.00', slug: 'delina', image: productImage('delina-pink.png') },
 ];
 
 const REVIEWS = [
@@ -135,7 +136,7 @@ export default function ProductDetail() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {(['TOP NOTES', 'HEART NOTES', 'BASE NOTES'] as const).map((label, idx) => {
               const key = (['top', 'heart', 'base'] as const)[idx];
-              const images = ['/images/ingredients/bergamot.png', '/images/ingredients/tuberose.png', '/images/ingredients/sandalwood.png'];
+              const images = [ingredientImage('bergamot.png'), ingredientImage('tuberose.png'), ingredientImage('sandalwood.png')];
               return (
                 <div key={label} className="bg-[var(--color-bg-elevated)] p-6">
                   <div className="mb-4 flex items-center gap-3">

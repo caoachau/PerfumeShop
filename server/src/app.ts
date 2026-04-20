@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import { env } from './config/env.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import uploadRoutes from './routes/upload.js';
 
 const app = express();
 
@@ -43,7 +44,7 @@ app.get('/api/health', (_req, res) => {
 // app.use('/api/cart', cartRoutes);
 // app.use('/api/orders', orderRoutes);
 // app.use('/api/reviews', reviewRoutes);
-// app.use('/api/upload', uploadRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.use(errorHandler);
 

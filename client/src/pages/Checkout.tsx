@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Shield, Gift } from 'lucide-react';
+import { productImage } from '../lib/cloudinaryAssets';
 
 const ORDER_ITEMS = [
   {
@@ -9,14 +10,14 @@ const ORDER_ITEMS = [
     collection: 'LES BOIS SERIES',
     size: '100ML | 3.4 FL OZ',
     price: '€265.00',
-    image: '/images/products/tf-oud-wood.png',
+    image: productImage('tf-oud-wood.png'),
   },
   {
     name: 'Noire Velours Candle',
     collection: 'HOME RITUALS',
     size: '200G / HAND-POURED',
     price: '€85.00',
-    image: '/images/products/tf-amber-intrigue.png',
+    image: productImage('tf-amber-intrigue.png'),
   },
 ];
 

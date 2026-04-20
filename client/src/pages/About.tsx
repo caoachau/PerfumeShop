@@ -1,12 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { ingredientImage, productImage } from '../lib/cloudinaryAssets';
 
 const RAW_PALETTE = [
-  { name: 'Bulgarian Rose', image: '/images/ingredients/tuberose.png' },
-  { name: 'Indian Sandalwood', image: '/images/ingredients/sandalwood.png' },
-  { name: 'French Lavender', image: '/images/ingredients/jasmine.png' },
-  { name: 'Madagascan Vanilla', image: '/images/ingredients/mandarin.png' },
-  { name: 'Italian Bergamot', image: '/images/ingredients/bergamot.png' },
+  { name: 'Bulgarian Rose', image: ingredientImage('tuberose.png') },
+  { name: 'Indian Sandalwood', image: ingredientImage('sandalwood.png') },
+  { name: 'French Lavender', image: ingredientImage('jasmine.png') },
+  { name: 'Madagascan Vanilla', image: ingredientImage('mandarin.png') },
+  { name: 'Italian Bergamot', image: ingredientImage('bergamot.png') },
 ];
 
 export default function About() {
@@ -39,7 +40,7 @@ export default function About() {
             </p>
           </div>
           <div className="aspect-[3/4] w-full overflow-hidden bg-[var(--color-bg-dark)] lg:w-1/2">
-            <img src="/images/products/valaya-centered.png" alt="The Olfactory Editorial" className="h-full w-full object-cover" />
+            <img src={productImage('valaya-centered.png')} alt="The Olfactory Editorial" className="h-full w-full object-cover" />
           </div>
         </div>
       </section>
@@ -67,10 +68,10 @@ export default function About() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="aspect-square overflow-hidden bg-[var(--color-bg-dark)]">
-                <img src="/images/ingredients/wood-flowers.png" alt="Heritage" className="h-full w-full object-cover" />
+                <img src={ingredientImage('wood-flowers.png')} alt="Heritage" className="h-full w-full object-cover" />
               </div>
               <div className="aspect-square overflow-hidden bg-[var(--color-bg-dark)]">
-                <img src="/images/products/tf-oud-wood.png" alt="Craftsmanship" className="h-full w-full object-cover" />
+                <img src={productImage('tf-oud-wood.png')} alt="Craftsmanship" className="h-full w-full object-cover" />
               </div>
             </div>
           </div>
@@ -82,10 +83,10 @@ export default function About() {
         <div className="flex flex-col items-center gap-12 lg:flex-row">
           <div className="grid w-full grid-cols-2 gap-4 lg:w-1/2">
             <div className="aspect-[3/4] overflow-hidden bg-[var(--color-bg-dark)]">
-              <img src="/images/products/tf-ombre-leather-dark.png" alt="Portrait" className="h-full w-full object-cover" />
+              <img src={productImage('tf-ombre-leather-dark.png')} alt="Portrait" className="h-full w-full object-cover" />
             </div>
             <div className="mt-12 aspect-[3/4] overflow-hidden bg-[var(--color-bg-surface)]">
-              <img src="/images/ingredients/wood-flowers.png" alt="Detail" className="h-full w-full object-cover" />
+              <img src={ingredientImage('wood-flowers.png')} alt="Detail" className="h-full w-full object-cover" />
             </div>
           </div>
           <div>

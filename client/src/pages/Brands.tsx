@@ -1,13 +1,14 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { productImage } from '../lib/cloudinaryAssets';
 
 const BRANDS = [
-  { name: 'Parfums de Marly', desc: 'Royal heritage perfumery inspired by the court of Versailles, blending classical French artistry with modern olfactory innovation.', slug: 'parfums-de-marly', image: '/images/products/valaya-white.png' },
-  { name: 'Tom Ford', desc: 'The pinnacle of modern glamour. Bold, sensual compositions that redefine luxury fragrance for the contemporary world.', slug: 'tom-ford', image: '/images/products/tf-ombre-leather-dark.png' },
-  { name: 'Xerjoff', desc: 'An avant-garde Italian perfume house known for using the rarest and most precious ingredients in exquisite presentations.', slug: 'xerjoff', image: '/images/products/xerjoff-blue.png' },
-  { name: 'Dior', desc: 'Timeless elegance from the house of Christian Dior. Each fragrance is a masterclass in sophistication and savoir-faire.', slug: 'dior', image: '/images/products/dior-homme-intense.png' },
-  { name: 'Narciso Rodriguez', desc: 'Minimalist luxury built around the magnetic allure of musk. Clean lines, pure essences, unforgettable signatures.', slug: 'narciso-rodriguez', image: '/images/products/narciso-bleu-noir.png' },
-  { name: 'Maison Francis Kurkdjian', desc: 'A fragrance orchestra where each note plays in perfect harmony, created by one of the greatest living perfumers.', slug: 'mfk', image: '/images/products/valaya-centered.png' },
+  { name: 'Parfums de Marly', desc: 'Royal heritage perfumery inspired by the court of Versailles, blending classical French artistry with modern olfactory innovation.', slug: 'parfums-de-marly', image: productImage('valaya-white.png') },
+  { name: 'Tom Ford', desc: 'The pinnacle of modern glamour. Bold, sensual compositions that redefine luxury fragrance for the contemporary world.', slug: 'tom-ford', image: productImage('tf-ombre-leather-dark.png') },
+  { name: 'Xerjoff', desc: 'An avant-garde Italian perfume house known for using the rarest and most precious ingredients in exquisite presentations.', slug: 'xerjoff', image: productImage('xerjoff-blue.avif') },
+  { name: 'Dior', desc: 'Timeless elegance from the house of Christian Dior. Each fragrance is a masterclass in sophistication and savoir-faire.', slug: 'dior', image: productImage('dior-homme-intense.png') },
+  { name: 'Narciso Rodriguez', desc: 'Minimalist luxury built around the magnetic allure of musk. Clean lines, pure essences, unforgettable signatures.', slug: 'narciso-rodriguez', image: productImage('narciso-bleu-noir.png') },
+  { name: 'Maison Francis Kurkdjian', desc: 'A fragrance orchestra where each note plays in perfect harmony, created by one of the greatest living perfumers.', slug: 'mfk', image: productImage('valaya-centered.png') },
 ];
 
 export default function Brands() {

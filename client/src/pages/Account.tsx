@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import { productImage } from '../lib/cloudinaryAssets';
 import {
   User,
   ShoppingBag,
@@ -25,9 +26,9 @@ const RECENT_ORDERS = [
 ];
 
 const RECOMMENDATIONS = [
-  { name: 'Encens Suprême', subtitle: 'EAU DE PARFUM', desc: 'Smoky incense layered with coldcatch and warm vanilla leaves.', image: '/images/products/tf-oud-wood.png' },
-  { name: "L'Or de Cuir", subtitle: 'INTENSE COLLECTION', desc: 'The scent of fine vintage leather found in saffron and musk.', image: '/images/products/tf-ombre-leather-light.png' },
-  { name: 'Noire Gardenia', subtitle: 'FLORAL ESSENCE', desc: 'A dark interpretation of classic floral notes with gardenia.', image: '/images/products/delina-pink.png' },
+  { name: 'Encens Suprême', subtitle: 'EAU DE PARFUM', desc: 'Smoky incense layered with coldcatch and warm vanilla leaves.', image: productImage('tf-oud-wood.png') },
+  { name: "L'Or de Cuir", subtitle: 'INTENSE COLLECTION', desc: 'The scent of fine vintage leather found in saffron and musk.', image: productImage('tf-ombre-leather-light.png') },
+  { name: 'Noire Gardenia', subtitle: 'FLORAL ESSENCE', desc: 'A dark interpretation of classic floral notes with gardenia.', image: productImage('delina-pink.png') },
 ];
 
 function AccountOverview() {

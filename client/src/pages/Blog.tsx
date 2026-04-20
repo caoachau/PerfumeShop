@@ -1,12 +1,13 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ingredientImage, productImage } from '../lib/cloudinaryAssets';
 
 const ARCHETYPES = [
-  { name: 'Sensual Amber', image: '/images/products/tf-amber-intrigue.png' },
-  { name: 'Ancient Rose', image: '/images/products/delina-pink.png' },
-  { name: 'Charcoal Lavender', image: '/images/products/layton-blue.png' },
-  { name: 'Solar Tangerine', image: '/images/ingredients/mandarin.png' },
+  { name: 'Sensual Amber', image: productImage('tf-amber-intrigue.png') },
+  { name: 'Ancient Rose', image: productImage('delina-pink.png') },
+  { name: 'Charcoal Lavender', image: productImage('layton-blue.png') },
+  { name: 'Solar Tangerine', image: ingredientImage('mandarin.png') },
 ];
 
 const ARTICLES = [
@@ -67,7 +68,7 @@ export default function Blog() {
               </p>
             </div>
             <div className="aspect-[4/3] w-full overflow-hidden bg-[var(--color-bg-primary)]/10 lg:w-1/2">
-              <img src="/images/products/valaya-flowers.png" alt="Featured" className="h-full w-full object-cover" />
+              <img src={productImage('valaya-flowers.png')} alt="Featured" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>

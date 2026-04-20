@@ -1,16 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { X, Sparkles } from 'lucide-react';
+import { productImage } from '../lib/cloudinaryAssets';
 
 const WISHLIST_ITEMS = [
-  { name: 'Obsidienne Noire', type: 'EAU DE PARFUM — 100ML', price: '$210.00', slug: 'obsidienne-noire', image: '/images/products/tf-ombre-leather-dark.png' },
-  { name: "Or d'Hiver", type: 'EXTRAIT DE PARFUM — 75ML', price: '$185.00', slug: 'or-dhiver', image: '/images/products/valaya-vanilla.png' },
-  { name: 'Pétale de Nuit', type: 'EAU DE PARFUM — 100ML', price: '$245.00', slug: 'petale-de-nuit', image: '/images/products/delina-pink.png' },
+  { name: 'Obsidienne Noire', type: 'EAU DE PARFUM — 100ML', price: '$210.00', slug: 'obsidienne-noire', image: productImage('tf-ombre-leather-dark.png') },
+  { name: "Or d'Hiver", type: 'EXTRAIT DE PARFUM — 75ML', price: '$185.00', slug: 'or-dhiver', image: productImage('valaya-vanilla.png') },
+  { name: 'Pétale de Nuit', type: 'EAU DE PARFUM — 100ML', price: '$245.00', slug: 'petale-de-nuit', image: productImage('delina-pink.png') },
 ];
 
 const RECOMMENDED = [
-  { name: 'Discovery Set', subtitle: 'GIFT SET', price: '$120.00', slug: 'discovery-set', image: '/images/products/tf-amber-intrigue.png' },
-  { name: 'Noir Intense Candle', subtitle: 'HOME RITUALS', price: '$85.00', slug: 'noir-intense-candle', image: '/images/products/tf-oud-wood.png' },
+  { name: 'Discovery Set', subtitle: 'GIFT SET', price: '$120.00', slug: 'discovery-set', image: productImage('tf-amber-intrigue.png') },
+  { name: 'Noir Intense Candle', subtitle: 'HOME RITUALS', price: '$85.00', slug: 'noir-intense-candle', image: productImage('tf-oud-wood.png') },
 ];
 
 export default function Wishlist() {

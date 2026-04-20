@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { bannerImage, ingredientImage, productImage, scentImage } from '../lib/cloudinaryAssets';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PenTool, FlaskConical, Compass, Leaf } from 'lucide-react';
 
@@ -89,17 +90,17 @@ function BrandMarqueeRow({ brands, reverse }: { brands: readonly string[]; rever
 }
 
 const FEATURED_ROW1 = [
-  { name: 'De Marly Valaya', brand: 'PARFUMS DE MARLY', price: '$245.00', image: '/images/products/valaya-white.png', slug: 'valaya' },
-  { name: 'Xerjoff Blue', brand: 'XERJOFF', price: '$320.00', image: '/images/products/xerjoff-blue.png', slug: 'xerjoff-blue' },
-  { name: 'Dior Homme Intense', brand: 'DIOR', price: '$195.00', image: '/images/products/dior-homme-intense.png', slug: 'dior-homme-intense' },
-  { name: 'Amber Intrigue', brand: 'TOM FORD', price: '$280.00', image: '/images/products/tf-amber-intrigue.png', slug: 'amber-intrigue' },
+  { name: 'De Marly Valaya', brand: 'PARFUMS DE MARLY', price: '$245.00', image: productImage('valaya'), slug: 'valaya' },
+  { name: 'Xerjoff Blue Hope', brand: 'XERJOFF', price: '$320.00', image: productImage('blue_hope_xerjoff'), slug: 'xerjoff-blue' },
+  { name: 'Dior Homme Intense', brand: 'DIOR', price: '$195.00', image: productImage('Dior_Homme_Intense'), slug: 'dior-homme-intense' },
+  { name: 'Amber Intrigue', brand: 'TOM FORD', price: '$280.00', image: productImage('tf-amber-intrigue.png'), slug: 'amber-intrigue' },
 ];
 
 const FEATURED_ROW2 = [
-  { name: 'Ombré Leather', brand: 'TOM FORD', price: '$210.00', image: '/images/products/tf-ombre-leather-dark.png', slug: 'ombre-leather' },
-  { name: 'Ombré Leather Parfum', brand: 'TOM FORD', price: '$265.00', image: '/images/products/tf-ombre-leather-light.png', slug: 'ombre-leather-parfum' },
-  { name: 'Oud Wood', brand: 'TOM FORD', price: '$340.00', image: '/images/products/tf-oud-wood.png', slug: 'oud-wood' },
-  { name: 'Bleu Noir', brand: 'NARCISO RODRIGUEZ', price: '$225.00', image: '/images/products/narciso-bleu-noir.png', slug: 'bleu-noir' },
+  { name: 'Ombré Leather', brand: 'TOM FORD', price: '$210.00', image: productImage('tf-ombre-leather-dark.png'), slug: 'ombre-leather' },
+  { name: 'Ombré Leather Parfum', brand: 'TOM FORD', price: '$265.00', image: productImage('tf-ombre-leather-light.png'), slug: 'ombre-leather-parfum' },
+  { name: 'Oud Wood', brand: 'TOM FORD', price: '$340.00', image: productImage('tf-oud-wood.png'), slug: 'oud-wood' },
+  { name: 'Bleu Noir', brand: 'NARCISO RODRIGUEZ', price: '$225.00', image: productImage('narciso-bleu-noir.png'), slug: 'bleu-noir' },
 ];
 
 type SeasonCard = { name: string; notes: string; image: string; slug: string };
@@ -116,27 +117,27 @@ const SEASON_THEME_GROUPS: readonly SeasonThemeGroup[] = [
     id: 'seasonal',
     label: 'SEASONAL EDIT',
     scents: [
-      { name: 'Winter Solstice', notes: 'INCENSE, PINE, LEATHER', image: '/images/products/valaya-vanilla.png', slug: 'valaya-vanilla' },
-      { name: 'Midnight Opera', notes: 'TUBEROSE, OUD, SAFFRON', image: '/images/products/layton-blue.png', slug: 'layton' },
-      { name: 'Linen Sky', notes: 'WHITE MUSK, ALDEHYDES, IRIS', image: '/images/products/delina-pink.png', slug: 'delina' },
+      { name: 'Winter Solstice', notes: 'INCENSE, PINE, LEATHER', image: scentImage('Winter_Sol'), slug: 'winter-solstice' },
+      { name: 'Midnight Opera', notes: 'TUBEROSE, OUD, SAFFRON', image: scentImage('midnight_opera'), slug: 'midnight-opera' },
+      { name: 'Linen Sky', notes: 'WHITE MUSK, ALDEHYDES, IRIS', image: scentImage('Linen_Sky'), slug: 'linen-sky' },
     ],
   },
   {
     id: 'for-her',
     label: 'FOR HER',
     scents: [
-      { name: 'Royal Essence', notes: 'APPLE, JASMINE, VANILLA', image: '/images/products/valaya-white.png', slug: 'valaya' },
-      { name: 'Velvet Bloom', notes: 'ROSE, VANILLA, MUSK', image: '/images/products/valaya-vanilla.png', slug: 'valaya-vanilla' },
-      { name: 'Rose Nocturne', notes: 'TURKISH ROSE, LYCHEE, PEONY', image: '/images/products/delina-pink.png', slug: 'delina' },
+      { name: 'Royal Essence', notes: 'APPLE, JASMINE, VANILLA', image: scentImage('valaya-white.png'), slug: 'valaya' },
+      { name: 'Velvet Bloom', notes: 'ROSE, VANILLA, MUSK', image: scentImage('valaya-vanilla.png'), slug: 'valaya-vanilla' },
+      { name: 'Rose Nocturne', notes: 'TURKISH ROSE, LYCHEE, PEONY', image: scentImage('delina-pink.png'), slug: 'delina' },
     ],
   },
   {
     id: 'for-him',
     label: 'FOR HIM',
     scents: [
-      { name: 'Magnetic Musk', notes: 'MUSK, BLUE CEDAR, EBONY', image: '/images/products/narciso-bleu-noir.png', slug: 'bleu-noir' },
-      { name: 'Desert Leather', notes: 'JASMINE, PATCHOULI, LEATHER', image: '/images/products/tf-ombre-leather-dark.png', slug: 'ombre-leather' },
-      { name: 'Iris Intensity', notes: 'IRIS, LAVENDER, CEDAR', image: '/images/products/dior-homme-intense.png', slug: 'dior-homme-intense' },
+      { name: 'Magnetic Musk', notes: 'MUSK, BLUE CEDAR, EBONY', image: scentImage('narciso-bleu-noir.png'), slug: 'bleu-noir' },
+      { name: 'Desert Leather', notes: 'JASMINE, PATCHOULI, LEATHER', image: scentImage('tf-ombre-leather-dark.png'), slug: 'ombre-leather' },
+      { name: 'Iris Intensity', notes: 'IRIS, LAVENDER, CEDAR', image: scentImage('dior-homme-intense.png'), slug: 'dior-homme-intense' },
     ],
   },
 ] as const;
@@ -155,7 +156,8 @@ const ESSENCE_LUXURY_TABS: readonly EssenceLuxuryTab[] = [
   {
     id: 'collection-01',
     label: 'COLLECTION 01',
-    image: '/images/products/tf-oud-wood.png',
+    //perfumeshop/banner/essence_of_lux_colection_1_keode8
+    image: bannerImage('essence_of_lux_colection_1'),
     imagePosition: 'center 40%',
     intro:
       'Every fragrance in our collection is a masterpiece — sourced from the finest ingredients, crafted by legendary perfumers, and presented with the reverence it deserves. We believe perfume is not just a scent, but a statement of identity.',
@@ -169,7 +171,7 @@ const ESSENCE_LUXURY_TABS: readonly EssenceLuxuryTab[] = [
   {
     id: 'archive-notes',
     label: 'ARCHIVE NOTES',
-    image: '/images/products/narciso-bleu-noir.png',
+    image: bannerImage('ARCHIVE_NOTE'),
     imagePosition: 'center center',
     watermark: 'NARCISO',
     intro:
@@ -184,7 +186,7 @@ const ESSENCE_LUXURY_TABS: readonly EssenceLuxuryTab[] = [
   {
     id: 'process-film',
     label: 'PROCESS FILM',
-    image: '/images/products/dior-homme-intense.png',
+    image: bannerImage('PROCESS_FILM'),
     imagePosition: '55% center',
     intro:
       'Process is where instinct meets rigor. We document every campaign of trials — from first sketch to final flacon — so the journey of a fragrance remains as legible as its sillage.',
@@ -198,7 +200,8 @@ const ESSENCE_LUXURY_TABS: readonly EssenceLuxuryTab[] = [
   {
     id: 'material-origin',
     label: 'MATERIAL ORIGIN',
-    image: '/images/ingredients/wood-flowers.png',
+    //perfumeshop/banners/MATERIAL_ORIGIN_boetop
+    image: bannerImage('MATERIAL_ORIGIN_boetop'),
     imagePosition: 'center center',
     intro:
       'Luxury begins where the map ends. We travel to origin — red earth, high altitude, coastal fog — to meet the people and places that give each material its voice.',
@@ -238,15 +241,29 @@ function ProductCard({ product }: { product: typeof FEATURED_ROW1[0] }) {
   return (
     <Link to={`/product/${product.slug}`} className="group">
       <div className="mb-4 aspect-[3/4] overflow-hidden bg-[var(--color-bg-surface)]">
+        {/*
+          Use a plain <img> with the exact URL from data. Do not wrap in <picture> with
+          guessed .avif/.webp paths — if those files are missing, browsers that support AVIF
+          still pick the <source> and show a broken image instead of falling back to src.
+        */}
         <img
           src={product.image}
           alt={product.name}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      <p className="mb-1 text-[10px] tracking-[0.15em] text-[var(--color-text-muted)]">{product.brand}</p>
-      <h3 className="mb-1 text-sm font-medium text-[var(--color-text-primary)]">{product.name}</h3>
-      <p className="text-sm text-[var(--color-text-secondary)]">{product.price}</p>
+
+      <p className="mb-1 text-[10px] tracking-[0.15em] text-[var(--color-text-muted)]">
+        {product.brand}
+      </p>
+      <h3 className="mb-1 text-sm font-medium text-[var(--color-text-primary)]">
+        {product.name}
+      </h3>
+      <p className="text-sm text-[var(--color-text-secondary)]">
+        {product.price}
+      </p>
     </Link>
   );
 }
@@ -304,8 +321,8 @@ export default function Home() {
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', width: 350, height: 500, borderRadius: 16, background: 'linear-gradient(135deg, rgba(220,240,220,0.4), rgba(230,245,230,0.2))' }} />
                 <img
-                  src="/images/products/valaya-centered.png"
-                  alt="Featured Perfume"
+                  src={productImage('hero')}
+                  alt="Woman applying perfume — editorial hero"
                   style={{ position: 'relative', zIndex: 10, maxHeight: 600, width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))' }}
                 />
               </div>

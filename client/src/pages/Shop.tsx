@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { bannerImage, productImage } from '../lib/cloudinaryAssets';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { ChevronDown, ChevronUp, SlidersHorizontal, X } from 'lucide-react';
 
 const FILTER_BRANDS = ['Byredo', 'Diptyque', 'Creed', 'Tom Ford', 'Le Labo'];
@@ -9,20 +10,79 @@ const FILTER_SCENT_PROFILES = ['Floral & Powdery', 'Woody & Earthy', 'Smoky & Sp
 const FILTER_CONCENTRATIONS = ['Parfum', 'EDP', 'EDT', 'Cologne'];
 const FILTER_SIZES = ['10ML', '30ML', '50ML', '100ML', '125ML'];
 const SORT_OPTIONS = ['Latest Arrival', 'Price: Low to High', 'Price: High to Low', 'Best Sellers'];
+const FILTER_OCCASIONS = ['Daily', 'Office', 'Date Night', 'Party', 'Formal', 'Sport', 'Summer', 'Winter'];
+
+/**
+ * Stock video (MP4) from Pexels — free to use under the Pexels license.
+ * Hero: liquid / formulation tray (Pressmaster, id 3195394).
+ * Sidebar: dark cinematic particles / mood (Dan Cristian Pădureț, id 3045163).
+ * For production, prefer self-hosted assets so you are not tied to third-party CDNs.
+ */
+const SHOP_HERO_VIDEO_MP4 =
+  'https://videos.pexels.com/video-files/3195394/3195394-hd_1920_1080_25fps.mp4';
+const SHOP_SIDEBAR_VIDEO_MP4 =
+  'https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_25fps.mp4';
+
+function LoopingStockVideo({
+  src,
+  className,
+  style,
+  'aria-label': ariaLabel,
+}: {
+  src: string;
+  className?: string;
+  style?: CSSProperties;
+  'aria-label'?: string;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => {
+      if (mq.matches) {
+        el.pause();
+      } else {
+        void el.play().catch(() => {});
+      }
+    };
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  return (
+    <video
+      ref={ref}
+      className={className}
+      style={style}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-label={ariaLabel}
+    >
+      <source src={src} type="video/mp4" />
+    </video>
+  );
+}
 
 const PRODUCTS = [
-  { id: 1, name: 'De Marly Valaya', desc: 'A captivating floral scent that embodies femininity and grace with Turkish rose.', price: '$245.00', image: '/images/products/valaya-white.png', slug: 'valaya' },
-  { id: 2, name: 'Ombré Leather', desc: 'A deep, resinous journey through cedarwood and burnt honey, inspired by the desert.', price: '$240.00', image: '/images/products/tf-ombre-leather-dark.png', slug: 'ombre-leather' },
-  { id: 3, name: 'Amber Intrigue', desc: 'Warm amber and exotic spices create an intoxicating, mysterious aura.', price: '$280.00', image: '/images/products/tf-amber-intrigue.png', slug: 'amber-intrigue' },
-  { id: 4, name: 'Oud Wood', desc: 'Rare oud wood blended with rosewood and cardamom for an exotic sensory experience.', price: '$340.00', image: '/images/products/tf-oud-wood.png', slug: 'oud-wood' },
-  { id: 5, name: 'Delina', desc: 'A fresh and sophisticated floral with Turkish rose, lychee, and peony.', price: '$310.00', image: '/images/products/delina-pink.png', slug: 'delina' },
-  { id: 6, name: 'Bleu Noir', desc: 'A magnetic blend of musk, blue cedar, and ebony wood for the modern man.', price: '$225.00', image: '/images/products/narciso-bleu-noir.png', slug: 'bleu-noir' },
-  { id: 7, name: 'Valaya EDP', desc: 'Rose de Mai and white musk dance around a heart of iris and vanilla.', price: '$265.00', image: '/images/products/valaya-centered.png', slug: 'valaya-edp' },
-  { id: 8, name: 'Xerjoff Comandante', desc: 'An avant-garde Italian perfume house known for rare and precious ingredients.', price: '$320.00', image: '/images/products/xerjoff-blue.png', slug: 'xerjoff-blue' },
-  { id: 9, name: 'Dior Homme Intense', desc: 'Iris, lavender and Virginia cedar create a sensual masculine signature.', price: '$195.00', image: '/images/products/dior-homme-intense.png', slug: 'dior-homme-intense' },
-  { id: 10, name: 'Ombré Leather Parfum', desc: 'A richer, deeper evolution of the iconic leather fragrance.', price: '$290.00', image: '/images/products/tf-ombre-leather-light.png', slug: 'ombre-leather-parfum' },
-  { id: 11, name: 'Valaya Vanilla', desc: 'Warm Madagascar vanilla meets creamy sandalwood and white flowers.', price: '$255.00', image: '/images/products/valaya-vanilla.png', slug: 'valaya-vanilla' },
-  { id: 12, name: 'Layton', desc: 'Royal essence of apple, bergamot, jasmine, and precious woods.', price: '$315.00', image: '/images/products/layton-blue.png', slug: 'layton' },
+  { id: 1, name: 'De Marly Valaya', desc: 'A captivating floral scent that embodies femininity and grace with Turkish rose.', price: '$245.00', image: productImage('valaya-white.png'), slug: 'valaya' },
+  { id: 2, name: 'Ombré Leather', desc: 'A deep, resinous journey through cedarwood and burnt honey, inspired by the desert.', price: '$240.00', image: productImage('tf-ombre-leather-dark.png'), slug: 'ombre-leather' },
+  { id: 3, name: 'Amber Intrigue', desc: 'Warm amber and exotic spices create an intoxicating, mysterious aura.', price: '$280.00', image: productImage('tf-amber-intrigue.png'), slug: 'amber-intrigue' },
+  { id: 4, name: 'Oud Wood', desc: 'Rare oud wood blended with rosewood and cardamom for an exotic sensory experience.', price: '$340.00', image: productImage('tf-oud-wood.png'), slug: 'oud-wood' },
+  { id: 5, name: 'Delina', desc: 'A fresh and sophisticated floral with Turkish rose, lychee, and peony.', price: '$310.00', image: productImage('delina-pink.png'), slug: 'delina' },
+  { id: 6, name: 'Bleu Noir', desc: 'A magnetic blend of musk, blue cedar, and ebony wood for the modern man.', price: '$225.00', image: productImage('narciso-bleu-noir.png'), slug: 'bleu-noir' },
+  { id: 7, name: 'Valaya EDP', desc: 'Rose de Mai and white musk dance around a heart of iris and vanilla.', price: '$265.00', image: productImage('valaya-centered.png'), slug: 'valaya-edp' },
+  { id: 8, name: 'Xerjoff Comandante', desc: 'An avant-garde Italian perfume house known for rare and precious ingredients.', price: '$320.00', image: productImage('xerjoff-blue.avif'), slug: 'xerjoff-blue' },
+  { id: 9, name: 'Dior Homme Intense', desc: 'Iris, lavender and Virginia cedar create a sensual masculine signature.', price: '$195.00', image: productImage('dior-homme-intense.png'), slug: 'dior-homme-intense' },
+  { id: 10, name: 'Ombré Leather Parfum', desc: 'A richer, deeper evolution of the iconic leather fragrance.', price: '$290.00', image: productImage('tf-ombre-leather-light.png'), slug: 'ombre-leather-parfum' },
+  { id: 11, name: 'Valaya Vanilla', desc: 'Warm Madagascar vanilla meets creamy sandalwood and white flowers.', price: '$255.00', image: productImage('valaya-vanilla.png'), slug: 'valaya-vanilla' },
+  { id: 12, name: 'Layton', desc: 'Royal essence of apple, bergamot, jasmine, and precious woods.', price: '$315.00', image: productImage('layton-blue.png'), slug: 'layton' },
+
 ];
 
 function FilterSection({ title, items, type = 'checkbox' }: { title: string; items: string[]; type?: string }) {
@@ -107,8 +167,40 @@ export default function Shop() {
         </div>
       </div>
       <FilterSection title="SCENT PROFILE" items={FILTER_SCENT_PROFILES} />
+      <FilterSection title="OCCASION" items={FILTER_OCCASIONS} /> {/* 👈 thêm ở đây */}
+
       <FilterSection title="CONCENTRATION" items={FILTER_CONCENTRATIONS} />
       <FilterSection title="SIZE" items={FILTER_SIZES} type="size" />
+      {/* Tall vertical frame — desktop sidebar only (matches layout mock) */}
+      <div className="hidden lg:block">
+        <div className="relative mt-6 w-full overflow-hidden bg-[#141210] shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+          <div className="relative aspect-[4/8] w-full min-h-[220px]">
+            <LoopingStockVideo
+              src={SHOP_SIDEBAR_VIDEO_MP4}
+              className="absolute inset-0 h-full w-full object-cover object-[center_20%]"
+              aria-label="Cinematic fragrance mood"
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"
+              aria-hidden
+            />
+            <div className="absolute bottom-0 left-0 p-4 pr-6">
+              <p
+                className="text-[9px] font-medium leading-tight tracking-[0.38em] text-white/95"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                SCENT
+              </p>
+              <p
+                className="mt-1.5 text-[9px] font-medium leading-tight tracking-[0.38em] text-white/95"
+                style={{ fontFamily: 'var(--font-body)' }}
+              >
+                PROFILE
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 
@@ -137,7 +229,7 @@ export default function Shop() {
               </p>
             </div>
             <div className="w-full overflow-hidden bg-[var(--color-bg-dark)] lg:w-1/2">
-              <img src="/images/banners/collection-books.png" alt="Collection" className="aspect-[2/1] w-full object-cover" />
+              <img src={bannerImage('collection-books.png')} alt="Collection" className="aspect-[2/1] w-full object-cover" />
             </div>
           </div>
         </div>
@@ -182,17 +274,30 @@ export default function Shop() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 md:gap-x-6 md:gap-y-14 lg:grid-cols-4 lg:gap-y-16">
               {PRODUCTS.map((product) => (
-                <Link key={product.id} to={`/product/${product.slug}`} className="group">
-                  <div className="mb-3 aspect-[3/4] overflow-hidden bg-[var(--color-bg-surface)]">
-                    <img src={product.image} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <Link key={product.id} to={`/product/${product.slug}`} className="group flex flex-col">
+                  <div className="mb-4 aspect-[3/5] overflow-hidden bg-[var(--color-bg-surface)]">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
-                  <h3 className="mb-1 text-sm font-medium text-[var(--color-text-primary)]">{product.name}</h3>
-                  <p className="mb-2 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-2">{product.desc}</p>
-                  <div className="flex items-center justify-between">
+                  <h3
+                    className="mb-1.5 text-sm font-medium text-[var(--color-text-primary)] lg:text-[15px]"
+                    style={{ fontFamily: 'var(--font-heading)' }}
+                  >
+                    {product.name}
+                  </h3>
+                  <p className="mb-3 flex-1 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-3 md:text-[13px] md:leading-relaxed">
+                    {product.desc}
+                  </p>
+                  <div className="mt-auto flex items-end justify-between border-t border-transparent pt-1 group-hover:border-[var(--color-border)]">
                     <span className="text-sm font-medium text-[var(--color-text-primary)]">{product.price}</span>
-                    <span className="text-[10px] tracking-wider text-[var(--color-accent-gold)] opacity-0 transition-opacity group-hover:opacity-100">VIEW DETAILS</span>
+                    <span className="text-[10px] tracking-[0.12em] text-[var(--color-accent-gold)] opacity-0 transition-opacity group-hover:opacity-100">
+                      VIEW DETAILS
+                    </span>
                   </div>
                 </Link>
               ))}

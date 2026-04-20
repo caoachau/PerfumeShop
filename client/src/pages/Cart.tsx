@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { X, Shield, Truck, ChevronRight } from 'lucide-react';
 import { useCartStore, getCartTotal } from '../store/cartStore';
 import { useState } from 'react';
+import { productImage } from '../lib/cloudinaryAssets';
 
 const COMPLIMENTARY_SAMPLES = [
-  { name: 'Oud Mystique', status: 'ADDED', image: '/images/products/layton-blue.png' },
-  { name: 'Cèdre Fumé', status: 'SELECT', image: '/images/products/narciso-bleu-noir.png' },
-  { name: 'Vetiver Noir', status: 'ADDED', image: '/images/products/valaya-vanilla.png' },
-  { name: 'Musc Blanc', status: 'SOLD OUT', image: '/images/products/delina-pink.png' },
+  { name: 'Oud Mystique', status: 'ADDED', image: productImage('layton-blue.png') },
+  { name: 'Cèdre Fumé', status: 'SELECT', image: productImage('narciso-bleu-noir.png') },
+  { name: 'Vetiver Noir', status: 'ADDED', image: productImage('valaya-vanilla.png') },
+  { name: 'Musc Blanc', status: 'SOLD OUT', image: productImage('delina-pink.png') },
 ];
 
 const DEMO_ITEMS = [
@@ -18,7 +19,7 @@ const DEMO_ITEMS = [
     desc: 'Top notes of saffron and black pepper, melting into a heart of Bulgarian rose and agarwood.',
     price: 285,
     qty: 1,
-    image: '/images/products/tf-ombre-leather-dark.png',
+    image: productImage('tf-ombre-leather-dark.png'),
   },
   {
     name: "L'Ambre Soir",
@@ -26,7 +27,7 @@ const DEMO_ITEMS = [
     desc: 'A warm, resinous glow of amber and sandalwood. Hand-poured into a bespoke obsidian glass vessel.',
     price: 85,
     qty: 1,
-    image: '/images/products/tf-amber-intrigue.png',
+    image: productImage('tf-amber-intrigue.png'),
   },
 ];
 
