@@ -26,6 +26,9 @@ const envSchema = z.object({
 
   CLIENT_URL: z.string().url().default('http://localhost:5173'),
 
+  /** Max requests per IP per window for /api/* (excludes OPTIONS; health is uncounted). */
+  API_RATE_LIMIT_MAX: z.coerce.number().int().min(20).max(100_000).default(500),
+
   RESEND_API_KEY: z.string().optional(),
   GHN_API_KEY: z.string().optional(),
   GHN_SHOP_ID: z.string().optional(),
