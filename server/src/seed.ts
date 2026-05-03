@@ -304,6 +304,26 @@ async function seed() {
     },
   ];
 
+  const cloudImg = (id: string) =>
+    `https://res.cloudinary.com/dwj2trmn0/image/upload/q_auto,f_auto/perfumeshop/products/${id.replace(/\.[^.]+$/, '')}`;
+
+  const galleryIds = [
+    'valaya-white',
+    'delina-pink',
+    'tf-oud-wood',
+    'narciso-bleu-noir',
+    'layton-blue',
+    'blue_hope_xerjoff',
+    'Dior_Homme_Intense',
+    'tf-ombre-leather-dark',
+  ];
+
+  productsData.forEach((p, i) => {
+    const a = galleryIds[i % galleryIds.length];
+    const b = galleryIds[(i + 3) % galleryIds.length];
+    (p as { images?: string[] }).images = [cloudImg(a), cloudImg(b)];
+  });
+
   for (const pd of productsData) {
     const { variants: variantsData, ...productData } = pd;
     const product = await Product.create(productData);
