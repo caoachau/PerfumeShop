@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { clearAccessToken, writeAccessToken } from '../lib/authStorage';
 
 export interface AuthUser {
   _id: string;
@@ -32,11 +33,15 @@ export const useAuthStore = create<AuthStore>()(
     isAuthenticated: false,
     isLoading: true,
 
-    setUser: (user, token) =>
-      set({ user, accessToken: token, isAuthenticated: true, isLoading: false }),
+    setUser: (user, token) => {
+      writeAccessToken(token);
+      set({ user, accessToken: token, isAuthenticated: true, isLoading: false });
+    },
 
-    logout: () =>
-      set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false }),
+    logout: () => {
+      clearAccessToken();
+      set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
+    },
 
     setLoading: (isLoading) => set({ isLoading }),
   })),
