@@ -6,6 +6,7 @@ import {
   createProductAdmin,
   deleteProductAdmin,
   deleteVariantAdmin,
+  getProductAdminById,
   listProductsAdmin,
   updateProductAdmin,
   updateVariantAdmin,
@@ -24,6 +25,7 @@ router.put('/variants/:variantId', updateVariantAdmin);
 router.delete('/variants/:variantId', deleteVariantAdmin);
 
 router.get('/', listProductsAdmin);
+router.get('/:id', getProductAdminById);
 
 router.post('/', validate(adminCreateProductSchema), createProductAdmin);
 router.put('/:id', validate(adminUpdateProductSchema), updateProductAdmin);

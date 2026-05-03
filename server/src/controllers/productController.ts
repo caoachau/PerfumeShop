@@ -166,7 +166,24 @@ export const getProductBySlug = asyncHandler(async (req: Request, res: Response)
     .limit(8)
     .lean();
 
-  res.json({ success: true, data: { ...product, variants, relatedProducts: related } });
+  const relatedIds = related.map((p) => p._id);
+  const relatedVariantRows =
+    relatedIds.length > 0 ? await Variant.find({ product: { $in: relatedIds }, isActive: true }).lean() : [];
+
+  const rvByProduct = new Map<string, typeof relatedVariantRows>();
+  for (const rv of relatedVariantRows) {
+    const k = String(rv.product);
+    const arr = rvByProduct.get(k) ?? [];
+    arr.push(rv);
+    rvByProduct.set(k, arr);
+  }
+
+  const relatedProducts = related.map((p) => ({
+    ...p,
+    variants: rvByProduct.get(String(p._id)) ?? [],
+  }));
+
+  res.json({ success: true, data: { ...product, variants, relatedProducts } });
 });
 
 export const getProductReviews = asyncHandler(async (req: Request, res: Response) => {
@@ -346,6 +363,17 @@ export const deleteVariantAdmin = asyncHandler(async (req: Request, res: Respons
   v.isActive = false;
   await v.save();
   res.json({ success: true, message: 'Variant deactivated' });
+});
+
+export const getProductAdminById = asyncHandler(async (req: Request, res: Response) => {
+  const id = routeParam(req.params.id);
+  if (!isValidObjectId(id)) throw new AppError(400, 'Invalid product id');
+
+  const product = await Product.findById(id).populate('brand', 'name').populate('category', 'name').lean();
+  if (!product) throw new AppError(404, 'Product not found');
+
+  const variants = await Variant.find({ product: id }).sort({ createdAt: 1 }).lean();
+  res.json({ success: true, data: { ...product, variants } });
 });
 
 export const listProductsAdmin = asyncHandler(async (req: Request, res: Response) => {
