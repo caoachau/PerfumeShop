@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, X, Heart, MapPin } from 'lucide-react';
 import { useCartStore, getCartCount } from '../../store/cartStore';
+import { useAuthStore } from '../../store/authStore';
 
 const NAV_LEFT = [
   { label: 'HOME', path: '/' },
@@ -25,6 +26,8 @@ export default function Header() {
   const location = useLocation();
   const items = useCartStore((s) => s.items);
   const cartCount = getCartCount(items);
+  const user = useAuthStore((s) => s.user);
+  const isAdmin = user?.role === 'admin';
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -86,12 +89,17 @@ export default function Header() {
         </div>
 
         <div className="flex min-w-0 items-center justify-end gap-3 sm:gap-4 lg:gap-5">
-        <nav className="hidden flex-1 items-center justify-evenly lg:flex" aria-label="Secondary">
-                      {NAV_RIGHT.map((link) => (
+          <nav className="hidden flex-1 items-center justify-evenly lg:flex" aria-label="Secondary">
+            {NAV_RIGHT.map((link) => (
               <Link key={link.path} to={link.path} className={navLinkClass(link.path)}>
                 {link.label}
               </Link>
             ))}
+            {isAdmin && (
+              <Link to="/admin" className={navLinkClass('/admin')}>
+                ADMIN
+              </Link>
+            )}
           </nav>
           <span className="hidden h-7 w-px shrink-0 bg-[#1a1a1a] lg:block" aria-hidden />
           <Link to="/locations" className={`hidden lg:block ${iconClass}`} aria-label="Locations">
@@ -143,7 +151,7 @@ export default function Header() {
           aria-label="Mobile"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
-          {[...NAV_LEFT, ...NAV_RIGHT].map((link) => (
+          {[...NAV_LEFT, ...NAV_RIGHT, ...(isAdmin ? [{ label: 'ADMIN', path: '/admin' }] : [])].map((link) => (
             <Link
               key={link.path}
               to={link.path}

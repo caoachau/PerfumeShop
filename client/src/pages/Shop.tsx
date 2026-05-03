@@ -1,6 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { bannerImage, productImage } from '../lib/cloudinaryAssets';
+import { bannerImage } from '../lib/cloudinaryAssets';
+import { brandDisplayName, displayProductImage, formatVnd, minVariantRetailPrice } from '../lib/productMedia';
+import { fetchStoreProducts } from '../services/productCatalogService';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { ChevronDown, ChevronUp, SlidersHorizontal, X } from 'lucide-react';
 
@@ -9,7 +11,13 @@ const FILTER_GENDERS = ['Women', 'Men', 'Unisex'];
 const FILTER_SCENT_PROFILES = ['Floral & Powdery', 'Woody & Earthy', 'Smoky & Spicy', 'Fresh & Citrus'];
 const FILTER_CONCENTRATIONS = ['Parfum', 'EDP', 'EDT', 'Cologne'];
 const FILTER_SIZES = ['10ML', '30ML', '50ML', '100ML', '125ML'];
-const SORT_OPTIONS = ['Latest Arrival', 'Price: Low to High', 'Price: High to Low', 'Best Sellers'];
+const SORT_API: Record<string, string> = {
+  'Latest Arrival': 'newest',
+  'Price: Low to High': 'price_asc',
+  'Price: High to Low': 'price_desc',
+  'Best Sellers': 'rating',
+};
+const SORT_OPTIONS = Object.keys(SORT_API);
 const FILTER_OCCASIONS = ['Daily', 'Office', 'Date Night', 'Party', 'Formal', 'Sport', 'Summer', 'Winter'];
 
 /**
@@ -69,22 +77,6 @@ function LoopingStockVideo({
   );
 }
 
-const PRODUCTS = [
-  { id: 1, name: 'De Marly Valaya', desc: 'A captivating floral scent that embodies femininity and grace with Turkish rose.', price: '$245.00', image: productImage('valaya-white.png'), slug: 'valaya' },
-  { id: 2, name: 'Ombré Leather', desc: 'A deep, resinous journey through cedarwood and burnt honey, inspired by the desert.', price: '$240.00', image: productImage('tf-ombre-leather-dark.png'), slug: 'ombre-leather' },
-  { id: 3, name: 'Amber Intrigue', desc: 'Warm amber and exotic spices create an intoxicating, mysterious aura.', price: '$280.00', image: productImage('tf-amber-intrigue.png'), slug: 'amber-intrigue' },
-  { id: 4, name: 'Oud Wood', desc: 'Rare oud wood blended with rosewood and cardamom for an exotic sensory experience.', price: '$340.00', image: productImage('tf-oud-wood.png'), slug: 'oud-wood' },
-  { id: 5, name: 'Delina', desc: 'A fresh and sophisticated floral with Turkish rose, lychee, and peony.', price: '$310.00', image: productImage('delina-pink.png'), slug: 'delina' },
-  { id: 6, name: 'Bleu Noir', desc: 'A magnetic blend of musk, blue cedar, and ebony wood for the modern man.', price: '$225.00', image: productImage('narciso-bleu-noir.png'), slug: 'bleu-noir' },
-  { id: 7, name: 'Valaya EDP', desc: 'Rose de Mai and white musk dance around a heart of iris and vanilla.', price: '$265.00', image: productImage('valaya-centered.png'), slug: 'valaya-edp' },
-  { id: 8, name: 'Xerjoff Comandante', desc: 'An avant-garde Italian perfume house known for rare and precious ingredients.', price: '$320.00', image: productImage('xerjoff-blue.avif'), slug: 'xerjoff-blue' },
-  { id: 9, name: 'Dior Homme Intense', desc: 'Iris, lavender and Virginia cedar create a sensual masculine signature.', price: '$195.00', image: productImage('dior-homme-intense.png'), slug: 'dior-homme-intense' },
-  { id: 10, name: 'Ombré Leather Parfum', desc: 'A richer, deeper evolution of the iconic leather fragrance.', price: '$290.00', image: productImage('tf-ombre-leather-light.png'), slug: 'ombre-leather-parfum' },
-  { id: 11, name: 'Valaya Vanilla', desc: 'Warm Madagascar vanilla meets creamy sandalwood and white flowers.', price: '$255.00', image: productImage('valaya-vanilla.png'), slug: 'valaya-vanilla' },
-  { id: 12, name: 'Layton', desc: 'Royal essence of apple, bergamot, jasmine, and precious woods.', price: '$315.00', image: productImage('layton-blue.png'), slug: 'layton' },
-
-];
-
 function FilterSection({ title, items, type = 'checkbox' }: { title: string; items: string[]; type?: string }) {
   const [open, setOpen] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
@@ -143,7 +135,36 @@ function FilterSection({ title, items, type = 'checkbox' }: { title: string; ite
 
 export default function Shop() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [sortBy, setSortBy] = useState(SORT_OPTIONS[0]);
+  const [sortBy, setSortBy] = useState<string>(SORT_OPTIONS[0]!);
+  const [page, setPage] = useState(1);
+  const limit = 12;
+  const [products, setProducts] = useState<Awaited<ReturnType<typeof fetchStoreProducts>>['data']>([]);
+  const [meta, setMeta] = useState({ total: 0, totalPages: 1, page: 1, limit });
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const sort = SORT_API[sortBy] ?? 'newest';
+        const res = await fetchStoreProducts({ page, limit, sort });
+        if (cancelled) return;
+        setProducts(res.data);
+        setMeta(res.meta);
+      } catch {
+        if (!cancelled) {
+          setProducts([]);
+          setMeta({ total: 0, totalPages: 1, page: 1, limit });
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [page, sortBy, limit]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [sortBy]);
 
   const FiltersContent = () => (
     <>
@@ -265,7 +286,11 @@ export default function Shop() {
           {/* Grid */}
           <div className="flex-1">
             <div className="mb-6 flex items-center justify-between">
-              <p className="text-xs text-[var(--color-text-muted)]">SHOWING 1-12 OF 48 ITEMS</p>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                {meta.total > 0
+                  ? `HIỂN THỊ ${Math.min(meta.total, (meta.page - 1) * limit + 1)}–${Math.min(meta.total, meta.page * limit)} / ${meta.total} SẢN PHẨM`
+                  : 'CHƯA CÓ SẢN PHẨM HIỂN THỊ'}
+              </p>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] tracking-[0.1em] text-[var(--color-text-muted)]">SORT BY</span>
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border-b border-[var(--color-border)] bg-transparent py-1 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none">
@@ -275,41 +300,80 @@ export default function Shop() {
             </div>
 
             <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 md:gap-x-6 md:gap-y-14 lg:grid-cols-4 lg:gap-y-16">
-              {PRODUCTS.map((product) => (
-                <Link key={product.id} to={`/product/${product.slug}`} className="group flex flex-col">
-                  <div className="mb-4 aspect-[3/5] overflow-hidden bg-[var(--color-bg-surface)]">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <h3
-                    className="mb-1.5 text-sm font-medium text-[var(--color-text-primary)] lg:text-[15px]"
-                    style={{ fontFamily: 'var(--font-heading)' }}
-                  >
-                    {product.name}
-                  </h3>
-                  <p className="mb-3 flex-1 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-3 md:text-[13px] md:leading-relaxed">
-                    {product.desc}
-                  </p>
-                  <div className="mt-auto flex items-end justify-between border-t border-transparent pt-1 group-hover:border-[var(--color-border)]">
-                    <span className="text-sm font-medium text-[var(--color-text-primary)]">{product.price}</span>
-                    <span className="text-[10px] tracking-[0.12em] text-[var(--color-accent-gold)] opacity-0 transition-opacity group-hover:opacity-100">
-                      VIEW DETAILS
-                    </span>
-                  </div>
-                </Link>
-              ))}
+              {products.map((product, idx) => {
+                const thumb = displayProductImage(product.images, idx + product.slug.length);
+                const linePrice = formatVnd(minVariantRetailPrice(product.variants ?? []));
+                const brandLine = brandDisplayName(product.brand);
+                const desc =
+                  product.description ??
+                  `${brandLine ? `${brandLine} · ` : ''}${product.concentration ?? ''}${product.fragranceFamily ? ` · ${product.fragranceFamily}` : ''}`;
+                return (
+                  <Link key={product._id} to={`/product/${product.slug}`} className="group flex flex-col">
+                    <div className="mb-4 aspect-[3/5] overflow-hidden bg-[var(--color-bg-surface)]">
+                      <img
+                        src={thumb}
+                        alt={product.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <p className="mb-1 text-[10px] tracking-[0.12em] text-[var(--color-text-muted)]">
+                      {brandLine || 'CURATED'}
+                    </p>
+                    <h3
+                      className="mb-1.5 text-sm font-medium text-[var(--color-text-primary)] lg:text-[15px]"
+                      style={{ fontFamily: 'var(--font-heading)' }}
+                    >
+                      {product.name}
+                    </h3>
+                    <p className="mb-3 flex-1 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-3 md:text-[13px] md:leading-relaxed">
+                      {desc}
+                    </p>
+                    <div className="mt-auto flex items-end justify-between border-t border-transparent pt-1 group-hover:border-[var(--color-border)]">
+                      <span className="text-sm font-medium text-[var(--color-text-primary)]">{linePrice}</span>
+                      <span className="text-[10px] tracking-[0.12em] text-[var(--color-accent-gold)] opacity-0 transition-opacity group-hover:opacity-100">
+                        XEM CHI TIẾT
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Pagination */}
-            <div className="mt-14 flex items-center justify-center gap-2">
-              {[1, 2, 3, 4].map((page) => (
-                <button key={page} className={`flex h-9 w-9 items-center justify-center text-sm transition-colors ${page === 1 ? 'bg-[var(--color-accent)] text-[var(--color-text-inverse)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}>{page}</button>
-              ))}
-              <button className="ml-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">NEXT →</button>
-            </div>
+            {meta.totalPages > 1 && (
+              <div className="mt-14 flex flex-wrap items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="px-3 py-2 text-sm text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] disabled:opacity-35"
+                >
+                  ← PREV
+                </button>
+                {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((pNum) => (
+                  <button
+                    key={pNum}
+                    type="button"
+                    onClick={() => setPage(pNum)}
+                    className={`flex h-9 min-w-[2.25rem] items-center justify-center px-2 text-sm transition-colors ${
+                      pNum === page ? 'bg-[var(--color-accent)] text-[var(--color-text-inverse)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+                    }`}
+                  >
+                    {pNum}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
+                  disabled={page >= meta.totalPages}
+                  className="px-3 py-2 text-sm text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] disabled:opacity-35"
+                >
+                  NEXT →
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>

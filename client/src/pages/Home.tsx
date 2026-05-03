@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { bannerImage, ingredientImage, productImage, scentImage } from '../lib/cloudinaryAssets';
+import { brandDisplayName, displayProductImage, formatVnd, minVariantRetailPrice } from '../lib/productMedia';
+import { fetchStoreProducts } from '../services/productCatalogService';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PenTool, FlaskConical, Compass, Leaf } from 'lucide-react';
 
@@ -89,19 +91,13 @@ function BrandMarqueeRow({ brands, reverse }: { brands: readonly string[]; rever
   );
 }
 
-const FEATURED_ROW1 = [
-  { name: 'De Marly Valaya', brand: 'PARFUMS DE MARLY', price: '$245.00', image: productImage('valaya'), slug: 'valaya' },
-  { name: 'Xerjoff Blue Hope', brand: 'XERJOFF', price: '$320.00', image: productImage('blue_hope_xerjoff'), slug: 'xerjoff-blue' },
-  { name: 'Dior Homme Intense', brand: 'DIOR', price: '$195.00', image: productImage('Dior_Homme_Intense'), slug: 'dior-homme-intense' },
-  { name: 'Amber Intrigue', brand: 'TOM FORD', price: '$280.00', image: productImage('tf-amber-intrigue.png'), slug: 'amber-intrigue' },
-];
-
-const FEATURED_ROW2 = [
-  { name: 'Ombré Leather', brand: 'TOM FORD', price: '$210.00', image: productImage('tf-ombre-leather-dark.png'), slug: 'ombre-leather' },
-  { name: 'Ombré Leather Parfum', brand: 'TOM FORD', price: '$265.00', image: productImage('tf-ombre-leather-light.png'), slug: 'ombre-leather-parfum' },
-  { name: 'Oud Wood', brand: 'TOM FORD', price: '$340.00', image: productImage('tf-oud-wood.png'), slug: 'oud-wood' },
-  { name: 'Bleu Noir', brand: 'NARCISO RODRIGUEZ', price: '$225.00', image: productImage('narciso-bleu-noir.png'), slug: 'bleu-noir' },
-];
+type FeaturedCardProduct = {
+  slug: string;
+  name: string;
+  brand: string;
+  price: string;
+  image: string;
+};
 
 type SeasonCard = { name: string; notes: string; image: string; slug: string };
 
@@ -237,7 +233,7 @@ const WHY_CHOOSE = [
   },
 ];
 
-function ProductCard({ product }: { product: typeof FEATURED_ROW1[0] }) {
+function ProductCard({ product }: { product: FeaturedCardProduct }) {
   return (
     <Link to={`/product/${product.slug}`} className="group">
       <div className="mb-4 aspect-[3/4] overflow-hidden bg-[var(--color-bg-surface)]">
@@ -273,6 +269,34 @@ export default function Home() {
   const essence = ESSENCE_LUXURY_TABS[essenceTab];
   const [seasonTheme, setSeasonTheme] = useState(0);
   const seasonGroup = SEASON_THEME_GROUPS[seasonTheme];
+  const [featured, setFeatured] = useState<FeaturedCardProduct[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetchStoreProducts({ limit: 8, sort: 'newest' });
+        if (cancelled) return;
+        setFeatured(
+          res.data.map((p, i) => ({
+            slug: p.slug,
+            name: p.name,
+            brand: brandDisplayName(p.brand) || '—',
+            price: formatVnd(minVariantRetailPrice(p.variants ?? [])),
+            image: displayProductImage(p.images, i + p.slug.length),
+          })),
+        );
+      } catch {
+        if (!cancelled) setFeatured([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const featuredRow1 = featured.slice(0, 4);
+  const featuredRow2 = featured.slice(4, 8);
 
   return (
     <>
@@ -374,12 +398,24 @@ export default function Home() {
             VIEW ALL →
           </Link>
         </div>
-        <div className="mb-8 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
-          {FEATURED_ROW1.map((p) => <ProductCard key={p.slug} product={p} />)}
-        </div>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
-          {FEATURED_ROW2.map((p) => <ProductCard key={p.slug} product={p} />)}
-        </div>
+        {featured.length === 0 ? (
+          <p className="text-sm text-[var(--color-text-muted)]">Đang tải hoặc chưa có sản phẩm trong kho.</p>
+        ) : (
+          <>
+            <div className="mb-8 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+              {featuredRow1.map((p) => (
+                <ProductCard key={p.slug} product={p} />
+              ))}
+            </div>
+            {featuredRow2.length > 0 && (
+              <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+                {featuredRow2.map((p) => (
+                  <ProductCard key={p.slug} product={p} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </section>
 
       {/* ── Scents of the Season — equal-height cards + theme tabs ── */}
