@@ -4,12 +4,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import App from './App';
+import AuthBootstrap from './components/auth/AuthBootstrap';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
+        <AuthBootstrap />
         <App />
         <Toaster
           position="top-right"

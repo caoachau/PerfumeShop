@@ -1,7 +1,13 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import MainLayout from './layouts/MainLayout';
 import LoadingScreen from './components/ui/LoadingScreen';
+
+const AdminRouteGuard = lazy(() => import('./components/admin/AdminRouteGuard'));
+const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminProducts = lazy(() => import('./pages/admin/Products'));
+const AdminProductForm = lazy(() => import('./pages/admin/ProductForm'));
 
 const Home = lazy(() => import('./pages/Home'));
 const Shop = lazy(() => import('./pages/Shop'));
@@ -36,6 +42,15 @@ export default function App() {
           <Route path="checkout" element={<Checkout />} />
           <Route path="account" element={<Account />}>
             <Route path="orders" element={<OrderHistory />} />
+          </Route>
+        </Route>
+        <Route path="admin" element={<AdminRouteGuard />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<Navigate to="products" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="products/new" element={<AdminProductForm />} />
+            <Route path="products/:id/edit" element={<AdminProductForm />} />
           </Route>
         </Route>
         <Route path="*" element={<NotFound />} />
