@@ -22,6 +22,7 @@ const OrderHistory = lazy(() => import('./pages/OrderHistory'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Wishlist = lazy(() => import('./pages/Wishlist'));
 const Checkout = lazy(() => import('./pages/Checkout'));
+const CheckoutThankYou = lazy(() => import('./pages/CheckoutThankYou'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="cart" element={<Cart />} />
           <Route path="wishlist" element={<Wishlist />} />
           <Route path="checkout" element={<Checkout />} />
+          <Route path="checkout/thank-you/:orderId" element={<CheckoutThankYou />} />
           <Route path="account" element={<Account />}>
             <Route path="orders" element={<OrderHistory />} />
           </Route>

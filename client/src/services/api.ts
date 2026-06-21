@@ -17,12 +17,25 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+/** 401 on login/register means wrong credentials, not expired access token — do not trigger refresh. */
+function isAuthCredentialRequest(url: string | undefined): boolean {
+  const u = String(url ?? '');
+  return u.includes('/auth/login') || u.includes('/auth/register');
+}
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const original = error.config;
+    const status = error.response?.status;
 
-    if (error.response?.status === 401 && !original._retry) {
+    const tryRefresh =
+      status === 401 &&
+      original &&
+      !original._retry &&
+      !isAuthCredentialRequest(original.url);
+
+    if (tryRefresh) {
       original._retry = true;
       try {
         const { data } = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });

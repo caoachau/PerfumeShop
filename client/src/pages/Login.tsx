@@ -31,10 +31,20 @@ export default function Login() {
       const fallback = data.user.role === 'admin' ? '/admin' : '/';
       navigate(safeFrom ?? fallback, { replace: true });
     } catch (err) {
-      const msg =
+      let msg =
         axios.isAxiosError(err) && typeof err.response?.data?.message === 'string'
           ? err.response.data.message
           : 'Đăng nhập thất bại. Vui lòng kiểm tra email và mật khẩu.';
+      if (axios.isAxiosError(err)) {
+        if (!err.response) {
+          msg =
+            'Không kết nối được máy chủ API. Kiểm tra backend đã chạy (thường port 5000), biến VITE_API_URL và proxy /api trong Vite.';
+        } else if (err.response.status === 401) {
+          if (typeof err.response.data?.message === 'string' && /invalid credential/i.test(err.response.data.message)) {
+            msg = 'Email hoặc mật khẩu không đúng.';
+          }
+        }
+      }
       setFormError(msg);
     } finally {
       setSubmitting(false);

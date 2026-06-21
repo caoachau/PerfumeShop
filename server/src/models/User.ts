@@ -85,7 +85,7 @@ const userSchema = new Schema<IUser>(
   { timestamps: true },
 );
 
-userSchema.index({ email: 1 });
+/** email index đã có sẵn từ unique: true */
 userSchema.index({ role: 1 });
 
 userSchema.pre('save', async function (next) {

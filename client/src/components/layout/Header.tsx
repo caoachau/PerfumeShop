@@ -15,6 +15,14 @@ const NAV_RIGHT = [
   { label: 'ABOUT', path: '/about' },
 ];
 
+/** Các route chỉ có icon trên desktop — thêm vào menu mobile cho dễ vào /cart. */
+const MOBILE_UTILITY_LINKS = [
+  { label: 'CART', path: '/cart' },
+  { label: 'WISHLIST', path: '/wishlist' },
+  { label: 'ACCOUNT', path: '/account' },
+  { label: 'LOCATIONS', path: '/locations' },
+] as const;
+
 const iconProps = {
   size: 19,
   strokeWidth: 1.15,
@@ -151,7 +159,12 @@ export default function Header() {
           aria-label="Mobile"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
-          {[...NAV_LEFT, ...NAV_RIGHT, ...(isAdmin ? [{ label: 'ADMIN', path: '/admin' }] : [])].map((link) => (
+          {[
+            ...NAV_LEFT,
+            ...NAV_RIGHT,
+            ...MOBILE_UTILITY_LINKS,
+            ...(isAdmin ? [{ label: 'ADMIN', path: '/admin' as const }] : []),
+          ].map((link) => (
             <Link
               key={link.path}
               to={link.path}

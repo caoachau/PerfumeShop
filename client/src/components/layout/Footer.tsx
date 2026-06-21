@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Share2, Mail, AtSign } from 'lucide-react';
 
 const NAVIGATION_LINKS = [
+  { label: 'Cart', path: '/cart' },
   { label: 'Our Story', path: '/about' },
   { label: 'Shipping & Returns', path: '/policy/shipping' },
   { label: 'Privacy Policy', path: '/policy/privacy' },
