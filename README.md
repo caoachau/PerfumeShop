@@ -65,8 +65,8 @@ Hệ thống hỗ trợ toàn bộ vòng đời mua hàng: duyệt sản phẩm 
 
 ### 👥 Thông tin nhóm
 
-| Vai trò | Thành viên | GitHub |
-|--------|-----------|--------|
+| Vai trò | Thành viên | MSSV | Mã Lớp|
+|--------|-----------|--------|--------|
 | Team Lead / Fullstack | Cao Á Châu | 110123206 | DA223TTA |
 | Frontend Developer | Trần Vũ Ngọc Huỳnh | 110123206 | DA223TTA 
 | Backend Developer | … | 110123206 | DA223TTA |
