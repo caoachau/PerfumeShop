@@ -68,8 +68,8 @@ Hệ thống hỗ trợ toàn bộ vòng đời mua hàng: duyệt sản phẩm 
 | Vai trò | Thành viên | MSSV | Mã Lớp|
 |--------|-----------|--------|--------|
 | Team Lead / Fullstack | Cao Á Châu | 110123206 | DA223TTA |
-| Frontend Developer | Trần Vũ Ngọc Huỳnh | 110123206 | DA223TTA 
-| Backend Developer | … | 110123206 | DA223TTA |
+| Frontend Developer | Trần Vũ Ngọc Huỳnh | 110123012 | DA223TTA 
+| Backend Developer | Trần Hoàng Oanh | 110123037 | DA223TTA |
 
 - **Đại học Trà Vinh**
 - **Trường:** Kỹ Thuật và Công Nghê
