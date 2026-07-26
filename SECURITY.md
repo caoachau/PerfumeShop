@@ -1,6 +1,6 @@
 # 🔒 Chính sách Bảo mật — L'Essence Noire
 
-Tài liệu này mô tả các biện pháp bảo mật được áp dụng trong dự án, quy trình báo cáo lỗ hổng, và các khuyến nghị triển khai an toàn. Mọi đóng góp về bảo mật đều được hoát nghinh.
+Tài liệu này mô tả các biện pháp bảo mật được áp dụng trong dự án, quy trình báo cáo lỗ hổng, và các khuyến nghị triển khai an toàn. Mọi đóng góp về bảo mật đều được ghi nhận.
 
 ---
 
@@ -20,7 +20,7 @@ Tài liệu này mô tả các biện pháp bảo mật được áp dụng tron
 
 Nếu phát hiện lỗ hổng, hãy báo cáo riêng tư qua:
 
-- **Email:** `Chaucao4325@gmail.com` *(Tean Leader)*
+- **Email:** `Chaucao4325@gmail.com` *(Team Leader)*
 - Hoặc dùng tính năng **GitHub Security Advisories** (*Security → Report a vulnerability*).
 
 Khi báo cáo, vui lòng kèm theo:
