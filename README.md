@@ -67,9 +67,9 @@ Hệ thống hỗ trợ toàn bộ vòng đời mua hàng: duyệt sản phẩm 
 
 | Vai trò | Thành viên | GitHub |
 |--------|-----------|--------|
-| Team Lead / Fullstack | … | … |
-| Frontend Developer | … | … |
-| Backend Developer | … | … |
+| Team Lead / Fullstack | Cao Á Châu | 110123206 | DA223TTA |
+| Frontend Developer | Trần Vũ Ngọc Huỳnh | 110123206 | DA223TTA 
+| Backend Developer | … | 110123206 | DA223TTA |
 
 - **Đại học Trà Vinh**
 - **Trường:** Kỹ Thuật và Công Nghê
