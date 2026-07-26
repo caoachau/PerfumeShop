@@ -20,7 +20,7 @@ Tài liệu này mô tả các biện pháp bảo mật được áp dụng tron
 
 Nếu phát hiện lỗ hổng, hãy báo cáo riêng tư qua:
 
-- **Email:** `security@lessence-noire.com` *(điền email thật của nhóm)*
+- **Email:** `Chaucao4325@gmail.com` *(Tean Leader)*
 - Hoặc dùng tính năng **GitHub Security Advisories** (*Security → Report a vulnerability*).
 
 Khi báo cáo, vui lòng kèm theo:
