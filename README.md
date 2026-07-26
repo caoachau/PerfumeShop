@@ -71,10 +71,11 @@ Hệ thống hỗ trợ toàn bộ vòng đời mua hàng: duyệt sản phẩm 
 | Frontend Developer | … | … |
 | Backend Developer | … | … |
 
-- **Trường / Khoa:** …
-- **Học phần:** …
-- **Giảng viên hướng dẫn:** …
-- **Năm học:** …
+- **Đại học Trà Vinh**
+- **Trường:** Kỹ Thuật và Công Nghê
+- **Học phần:** Công nghệ phần mềm
+- **Giảng viên hướng dẫn:** Nguyễn Bảo Ân
+- **Năm học:** 2026 -2027
 
 ### 🎯 Mục tiêu đồ án
 
