@@ -502,7 +502,7 @@ Dự án phát hành dưới **MIT License** — xem file [LICENSE](LICENSE) đ�
 
 <div align="center">
 
-**L'Essence Noire** — *Khám phá mùi hương chữ ký của bạn.* 🖤
+**L'Essence Noire** — *Every scent has souls.* 🖤
 
 Được phát triển với ❤️ bằng TypeScript.
 
